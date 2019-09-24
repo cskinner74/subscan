@@ -29,7 +29,7 @@ def main(argv):
             outputfile = arg
     if not inputfile or not outputfile:
         print('usage: subscan.py -i <inputfile> -o <outputfile>')
-        sys.exit(2)
+        sys.exit()
     with open(inputfile) as i:
         line = i.readline().rstrip()
         with open(outputfile, 'a') as out:
