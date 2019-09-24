@@ -2,7 +2,7 @@
 #
 #subscan.py
 #Developer: Cody Skinner
-#ver 0.0.1
+#ver 0.1.1
 
 import subprocess
 import sys
