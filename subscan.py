@@ -7,6 +7,7 @@
 import subprocess
 import sys
 import getopt
+import re
 
 
 def main(argv):
@@ -21,6 +22,7 @@ def main(argv):
         if opt == '-h':
             print('subscan.py')
             print('Tool for checking host information for a list of domains')
+            print('Includes option to extract NXDOMAIN results to a text file')
             print('usage: subscan.py -i <inputfile> -o <outputfile>')
             sys.exit()
         elif opt in ('-i', '--ifile'):
@@ -30,7 +32,7 @@ def main(argv):
     if not inputfile or not outputfile:
         print('usage: subscan.py -i <inputfile> -o <outputfile>')
         sys.exit()
-    with open(inputfile) as i:
+    with open(inputfile, 'r') as i:
         line = i.readline().rstrip()
         with open(outputfile, 'a') as out:
             while line:
@@ -40,6 +42,24 @@ def main(argv):
                     result = proc.stdout.read()
                     out.write(str(result) + '\n')
                 line = i.readline().rstrip()
+    print('Output saved to ', outputfile)
+    cont = input('Extract NXDOMAIN listings? (y/N): ')
+    if cont == 'y' or cont == 'Y':
+        nxdomain = 'nxdomain-' + outputfile
+        pattern = re.compile("NXDOMAIN")
+        strippat = re.compile(r'^(?:\S+\s){1}(\S+)')
+        with open(outputfile, 'r') as results:
+            nxdline = results.readline()
+            with open(nxdomain, 'a') as o:
+                while nxdline:
+                    if pattern.search(nxdline) != None:
+                        host = strippat.search(nxdline).group(1)
+                        o.write(host + '\n')
+                    nxdline = results.readline()
+        print('NXDOMAIN list saved to: ', nxdomain)
+    else:
+        sys.exit()
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
