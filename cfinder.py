@@ -11,8 +11,9 @@ import re
 def main(argv):
     inputfile = ''
     outputfile = ''
+    verbose = False
     try:
-        opts, args = getopt.getopt(argv, 'hi:o:',['ifile=','ofile='])
+        opts, args = getopt.getopt(argv, 'hi:o:v',['ifile=','ofile=','verbose='])
     except getopt.GetoptError:
         print('usage: cfinder.py -i <inputfile> -o <outputfile>')
         sys.exit(2)
@@ -26,14 +27,19 @@ def main(argv):
             inputfile = arg
         elif opt in ('-o','--ofile'):
             outputfile = arg
+        elif opt in ('-v','--verbose'):
+            verbose = True
     if not inputfile or not outputfile:
         print('usage: cfinder.py -i <inputfile> -o <outputfile>')
         sys.exit()
+    print('Checking for CNAME entires in DNS results')
+    print('Please be patient, this may take a while with long lists')
     with open(inputfile, 'r') as i:
         line = i.readline().rstrip()
         with open(outputfile, 'a') as out:
             while line:
-                print('Checking ',str(line))
+                if verbose:
+                    print('Checking ',str(line))
                 cmd = ['dig', line]
                 pull = ['grep','CNAME']
                 p1 = subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True)

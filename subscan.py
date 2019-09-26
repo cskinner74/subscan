@@ -32,6 +32,8 @@ def main(argv):
     if not inputfile or not outputfile:
         print('usage: subscan.py -i <inputfile> -o <outputfile>')
         sys.exit()
+    print('Checking host information for domains in list')
+    print('Please be patient, this may take a while with long lists')
     with open(inputfile, 'r') as i:
         line = i.readline().rstrip()
         with open(outputfile, 'a') as out:
